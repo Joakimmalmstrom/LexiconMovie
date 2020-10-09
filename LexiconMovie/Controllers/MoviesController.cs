@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LexiconMovie.Data;
 using LexiconMovie.Models;
+using LexiconMovie.Models.ViewModels;
 
 namespace LexiconMovie.Controllers
 {
@@ -23,8 +24,34 @@ namespace LexiconMovie.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await db.Movie.ToListAsync());
-        } 
+        }  
         
+        public async Task<IActionResult> Index2()
+        {
+            var movies = await db.Movie.ToListAsync();
+
+            var model = new MovieViewModel
+            {
+                Movies = movies,
+                Genres = await GenresAsync()
+            };
+
+            return View(model);
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GenresAsync()
+        {
+            return await db.Movie
+                        .Select(m => m.Genre)
+                        .Distinct()
+                        .Select(m => new SelectListItem
+                        {
+                            Text = m.ToString(),
+                            Value = m.ToString()
+                        })
+                        .ToListAsync();
+        }
+
         public async Task<IActionResult> Filter(string title, int? genre)
         {
             var model = string.IsNullOrWhiteSpace(title) ?
