@@ -38,6 +38,18 @@ namespace LexiconMovie.Controllers
 
             return View(model);
         }
+        
+        public async Task<IActionResult> Index3()
+        {
+            var movies = await db.Movie.ToListAsync();
+
+            var model = new MovieViewModel
+            {
+                Movies = movies,
+            };
+
+            return View(model);
+        }
 
         private async Task<IEnumerable<SelectListItem>> GenresAsync()
         {

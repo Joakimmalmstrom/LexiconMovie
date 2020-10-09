@@ -1,17 +1,17 @@
 ﻿@model LexiconMovie.Models.ViewModels.MovieViewModel
 @inject LexiconMovie.Services.ISelectService service
 
-@{ 
-    ViewData["Title"] = "Index2";
+@{
+    ViewData["Title"] = "Index3";
 }
 
-<h1>Index2</h1>
+<h1>Index3</h1>
 
 <form asp-action="Filter2">
     <div class="input-group mb-3">
-        <input type="text" class="form-control" asp-for="Title" placeholder="Search on title..." />
+        <input type="text" class="form-control" asp-for="@Model.Title" placeholder="Search on title..." />
         <div class="input-group-append">
-            <select asp-for="Genre" asp-items="@await service.GetGenresAsync()" class="form-control">
+            <select asp-for="@Model.Genre" asp-items="@await service.GetGenresAsync()" class="form-control">
                 <option selected="selected" value="">Please select</option>
             </select>
         </div>

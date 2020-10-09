@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using LexiconMovie.Data;
+using LexiconMovie.Services;
 
 namespace LexiconMovie
 {
@@ -26,6 +27,8 @@ namespace LexiconMovie
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddScoped<ISelectService, GenreSelectService>();
 
             services.AddDbContext<LexiconMovieContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("LexiconMovieContext")));
