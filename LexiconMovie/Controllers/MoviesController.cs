@@ -12,17 +12,30 @@ namespace LexiconMovie.Controllers
 {
     public class MoviesController : Controller
     {
-        private readonly LexiconMovieContext _context;
+        private readonly LexiconMovieContext db;
 
         public MoviesController(LexiconMovieContext context)
         {
-            _context = context;
+            db = context;
         }
 
         // GET: Movies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Movie.ToListAsync());
+            return View(await db.Movie.ToListAsync());
+        } 
+        
+        public async Task<IActionResult> Filter(string title, int? genre)
+        {
+            var model = string.IsNullOrWhiteSpace(title) ?
+                db.Movie :
+                db.Movie.Where(m => m.Title.StartsWith(title));
+
+            model = genre == null ?
+                model :
+                model.Where(m => m.Genre == (Genre)genre);
+
+            return View(nameof(Index), await model.ToListAsync());
         }
 
         // GET: Movies/Details/5
@@ -33,7 +46,7 @@ namespace LexiconMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var movie = await db.Movie
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -58,8 +71,8 @@ namespace LexiconMovie.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
+                db.Add(movie);
+                await db.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -73,7 +86,7 @@ namespace LexiconMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie.FindAsync(id);
+            var movie = await db.Movie.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -97,8 +110,8 @@ namespace LexiconMovie.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
+                    db.Update(movie);
+                    await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +137,7 @@ namespace LexiconMovie.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var movie = await db.Movie
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -139,15 +152,15 @@ namespace LexiconMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.FindAsync(id);
-            _context.Movie.Remove(movie);
-            await _context.SaveChangesAsync();
+            var movie = await db.Movie.FindAsync(id);
+            db.Movie.Remove(movie);
+            await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MovieExists(int id)
         {
-            return _context.Movie.Any(e => e.Id == id);
+            return db.Movie.Any(e => e.Id == id);
         }
     }
 }
