@@ -65,6 +65,26 @@ namespace LexiconMovie.Controllers
             return View(nameof(Index), await model.ToListAsync());
         }
 
+        public async Task<IActionResult> Filter2(MovieViewModel viewModel)
+        {
+            var movies = string.IsNullOrWhiteSpace(viewModel.Title) ?
+                db.Movie :
+                db.Movie.Where(m => m.Title.StartsWith(viewModel.Title));
+
+            movies = viewModel.Genre == null ?
+                movies :
+                movies.Where(m => m.Genre == viewModel.Genre);
+
+            var model = new MovieViewModel
+            {
+                Movies = await movies.ToListAsync(),
+                Genres = await GenresAsync()
+            };
+
+            return View(nameof(Index2),  model);
+
+        }
+
         // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
