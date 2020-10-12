@@ -35,7 +35,7 @@
                     @Html.DisplayFor(modelItem => item.Genre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Rating)
+                    @await Component.InvokeAsync("Star", new { movieId = item.Id})
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -14,7 +14,7 @@ namespace LexiconMovie.Data
         {
         }
 
-        public DbSet<LexiconMovie.Models.Movie> Movie { get; set; }
+        public DbSet<Movie> Movie { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
